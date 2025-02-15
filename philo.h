@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/08 16:18:38 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/15 13:12:18 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,43 @@
 # include <stdint.h>
 # include <limits.h>
 
+# define TOTAL_PHILOS 200
+
 typedef struct s_alloc
 {
 	void			*content;
 	struct s_alloc	*next;
 }	t_alloc;
 
-typedef struct s_data
+typedef struct s_args
 {
 	size_t	total_philos;
 	size_t	death_time;
-	size_t	eating_time;
-	size_t	sleeping_time;
+	size_t	eat_time;
+	size_t	sleep_time;
 	size_t	cycles_total;
-}	t_data;
-
+}	t_args;
 
 typedef struct s_sync
 {
-	int k;
-	t_data	*data;
+	pthread_mutex_t	change;
+	size_t			start;
+	size_t			end;
 }	t_sync;
 
+typedef struct s_philo
+{
+	int				number;
+	pthread_t		thread;
+	size_t			last;
+	size_t			meals;
+	pthread_mutex_t	right;
+	pthread_mutex_t	*left;
+	t_args			*args;
+	t_sync			*sync;
+}	t_philo;
+
 void	*ft_malloc(size_t size, int flag, void *one, void *two);
+size_t	custom_atoi(const char *str, int *error);
 
 #endif

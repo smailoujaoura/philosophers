@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 16:11:46 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/08 16:12:05 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/15 11:36:19 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ size_t	custom_atoi(const char *str, int *error)
 	while (*str)
 	{
 		if (num > SIZE_MAX / 10
-			|| (num == SIZE_MAX / 10 && (*str - '0') > SIZE_MAX % 10))
+			|| (num == SIZE_MAX / 10 && (size_t)(*str - '0') > SIZE_MAX % 10))
 			*error = 1;
 		if (*str >= '0' && *str <= '9')
 			num = num * 10 + (*str - '0');
@@ -69,6 +69,8 @@ void	*ft_malloc(size_t size, int flag, void *one, void *two)
 	t_alloc			*new;
 	static t_alloc	*allocs;
 
+	ptr = NULL;
+	new = NULL;
 	if (flag)
 	{
 		if (ptr)
