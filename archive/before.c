@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   before.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/16 17:04:45 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/16 16:39:58 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,38 +174,12 @@ void	*start_routine(void *ptr)
 	return (NULL);
 }
 
-void	*monitor_death(void *ptr)
-{
-	t_philo	*philos;
-	t_arg	*args;
-	size_t	i = 0;
-	
-	philos = (t_philo *)ptr;
-	args = philos->args;
-	while (1)
-	{
-		i = 0;
-		while (i < args->total_philos)
-		{
-			if (get_time() - philos[i].last >= args->death_time)
-			{
-				printf("%zu ms %zu died\n", get_time() - philos->sync->start, philos[i].number);
-				return ((void *)1);
-			}
-			i++;
-		}
-		usleep(100);
-	}
-	return (NULL);
-}
-
 void	*start_sync(t_philo *philos, t_arg *args)
 {
 	size_t			i = 0;
 	struct timeval	tv;
-	pthread_t		monitor;
-	int				status = 0;
 
+	// maybe lock the mutexes initally, but that would be make the threads run and consume the usleep wait time.
 	gettimeofday(&tv, NULL);
 	philos->sync->start = tv.tv_sec * 1000 + tv.tv_usec / 1000;
 	while (i < args->total_philos)
@@ -214,18 +188,36 @@ void	*start_sync(t_philo *philos, t_arg *args)
 			return (NULL);
 		i++;
 	}
-	pthread_create(&monitor, NULL, monitor_death, philos);
-	pthread_join(monitor, (void *)&status);
 	i = 0;
 	while (i < args->total_philos)
 	{
-		if (pthread_detach(philos[i].thread) != 0)
+		if (pthread_join(philos[i].thread, NULL) != 0)
 			return (NULL);
 		i++;
+		if (i == args->total_philos)
+			return (NULL);
 	}
-	if (status == 1)
+	int flag = 0;
+	usleep(args->death_time);
+	while (1)
 	{
-		printf("Got back status\n");
+		i = 0;
+		while (i < args->total_philos)
+		{
+			pthread_mutex_lock(&philos->sync->change);
+			if (get_time() - philos[i].last >= args->death_time)
+			{
+				printf("%zu ms %zu died\n", get_time() - philos->sync->start, philos[i].number);
+				flag = 1;
+				pthread_mutex_unlock(&philos->sync->change);
+				break ;
+			}
+			pthread_mutex_unlock(&philos->sync->change);
+			i++;
+		}
+		if (flag)
+			break ;
+		usleep(100);
 	}
 	return ((void *)1);
 }

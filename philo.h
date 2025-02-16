@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/15 13:12:18 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/16 11:54:48 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 # include <limits.h>
 
 # define TOTAL_PHILOS 200
+# define ALLOCATE 1337
+# define DEALLOCATE 42
+# define INIT_MUTEX_ERROR 22
 
 typedef struct s_alloc
 {
@@ -31,14 +34,14 @@ typedef struct s_alloc
 	struct s_alloc	*next;
 }	t_alloc;
 
-typedef struct s_args
+typedef struct s_arg
 {
 	size_t	total_philos;
 	size_t	death_time;
 	size_t	eat_time;
 	size_t	sleep_time;
 	size_t	cycles_total;
-}	t_args;
+}	t_arg;
 
 typedef struct s_sync
 {
@@ -49,13 +52,13 @@ typedef struct s_sync
 
 typedef struct s_philo
 {
-	int				number;
+	size_t			number;
 	pthread_t		thread;
 	size_t			last;
 	size_t			meals;
 	pthread_mutex_t	right;
 	pthread_mutex_t	*left;
-	t_args			*args;
+	t_arg			*args;
 	t_sync			*sync;
 }	t_philo;
 

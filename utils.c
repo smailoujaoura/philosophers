@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 16:11:46 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/15 11:36:19 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/15 21:14:36 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	*ft_malloc(size_t size, int flag, void *one, void *two)
 
 	ptr = NULL;
 	new = NULL;
-	if (flag)
+	if (flag == DEALLOCATE)
 	{
 		if (ptr)
 			free(one);
