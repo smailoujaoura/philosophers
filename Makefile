@@ -14,7 +14,7 @@ NAME = philo
 NAME_B = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g -lpthread -fsanitize=address
 # pthread as well
 
 SRCS =	main.c utils.c
