@@ -5,6 +5,7 @@
 void* thread_func(void* arg) 
 {
     printf("Hello from the thread!\n");
+    sleep(5);
     (void)arg;
     return NULL;
 }
