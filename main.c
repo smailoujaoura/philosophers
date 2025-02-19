@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/19 12:44:36 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/02/19 12:54:43 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ void	*monitor_death(void *ptr)
 		i = 0;
 		while (i < args->total_philos)
 		{
-			if (get_time() - philos[i].last_meal >= args->death_time)
+			if (timer_stamper(0) - philos[i].last_meal >= args->death_time)
 			{
-				printf("%zu ms %zu died\n", get_time() - philos->sync->start_time, philos[i].philo_number);
+				printf("%zu ms %zu died\n", timer_stamper(0), philos[i].philo_number);
 				return ((void *)1);
 			}
 			i++;
@@ -35,6 +35,31 @@ void	*monitor_death(void *ptr)
 		usleep(100);
 	}
 	return (NULL);
+}
+
+void	eat(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->right_fork);
+	printf("%zu ms %zu has taken a fork\n", timer_stamper(0), philo->philo_number);
+	pthread_mutex_lock(philo->left_fork);
+	printf("%zu ms %zu has taken a fork\n", timer_stamper(0), philo->philo_number);
+	
+	printf("%zu ms %zu is eating\n", timer_stamper(0), philo->philo_number);
+	precise_sleep(philo->args->eat_time);
+
+	pthread_mutex_unlock(&philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
+}
+
+void	sleep(t_philo *philo)
+{
+	printf("%zu ms %zu is sleeping\n", timer_stamper(0), philo->philo_number);
+	precise_sleep(philo->args->sleep_time);
+}
+
+void	think(t_philo *philo)
+{
+	printf("%zu ms %zu is thinking\n", timer_stamper(0), philo->philo_number);
 }
 
 void	*start_routine(void *ptr)
@@ -47,9 +72,12 @@ void	*start_routine(void *ptr)
 	{
 		if (philo->philo_number % 2 == 0)
 		{
-			printf("%zu ms %zu is sleeping\n", timer_stamper(0), philo->philo_number);
+			// printf("%zu ms %zu is sleeping\n", timer_stamper(0), philo->philo_number);
 			precise_sleep(philo->args->sleep_time);
 		}
+		eat(philo);
+		sleep(philo);
+		think(philo);
 	}
 }
 
