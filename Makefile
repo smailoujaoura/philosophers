@@ -6,7 +6,7 @@
 #    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/15 11:20:11 by soujaour          #+#    #+#              #
-#    Updated: 2025/02/19 14:11:09 by soujaour         ###   ########.fr        #
+#    Updated: 2025/03/05 09:11:00 by soujaour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,8 @@ NAME = philo
 NAME_B = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
-# pthread as well
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=thread
+
 
 SRCS =	main.c utils.c more.c
 
@@ -27,11 +27,10 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -lpthread -o $(NAME)
 
 %.o: %.c philo.h
-	$(CC) $(CFLAGS) -c $< -o $@ -MMD
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJS)
-	rm -rf $(OBJS:.o=.d)
 
 fclean: clean
 	rm -rf $(NAME)

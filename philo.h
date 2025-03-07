@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/02/19 12:44:01 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/07 20:46:17 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,18 @@ typedef struct s_alloc
 	struct s_alloc	*next;
 }	t_alloc;
 
-typedef struct s_arg
-{
-	size_t	total_philos;
-	size_t	death_time;
-	size_t	eat_time;
-	size_t	sleep_time;
-	size_t	cycles_total;
-}	t_arg;
-
 typedef struct s_sync
 {
-	pthread_mutex_t	status_change;
+	int				total_philos;
+	ssize_t			cycles_total;
+	size_t			death_time;
+	size_t			eat_time;
+	size_t			sleep_time;
+	pthread_mutex_t	state;
+	pthread_mutex_t write;
+	pthread_mutex_t lock;
 	int				stop;
+	size_t			starting_time;
 }	t_sync;
 
 typedef struct s_philo
@@ -54,25 +53,26 @@ typedef struct s_philo
 	size_t			philo_number;
 	pthread_t		thread_id;
 	size_t			last_meal;
-	size_t			total_meals;
+	ssize_t			total_meals;
 	pthread_mutex_t	right_fork;
 	pthread_mutex_t	*left_fork;
-	t_arg			*args;
 	t_sync			*sync;
 }	t_philo;
+
 
 void	*ft_malloc(size_t size, int flag, void *one, void *two);
 size_t	custom_atoi(const char *str, int *error);
 
 
-
 // 
-t_philo	*init_sync(t_arg *args);
-void	test_print_forks(t_philo *philos, t_arg *args);
+t_philo	*init_sync(t_sync *sync);
 void	finalize_init(t_philo *philos, size_t total_philos);
 void	*destroy_mutexes(t_philo *philos, size_t i, int flag);
-t_arg	*check_args(char *argv[], int flag);
 void	precise_sleep(size_t micro_secs);
 size_t	timer_stamper(int flag);
+void    ft_msleep(size_t millisec);
+t_sync	*check_args(char *argv[], int flag);
+size_t	get_time(void);
+
 
 #endif
