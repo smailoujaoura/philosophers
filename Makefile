@@ -6,7 +6,7 @@
 #    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/15 11:20:11 by soujaour          #+#    #+#              #
-#    Updated: 2025/03/08 08:10:54 by soujaour         ###   ########.fr        #
+#    Updated: 2025/03/08 10:03:56 by soujaour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = philo
 NAME_B = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g #-fsanitize=thread
 
 
 SRCS =	main.c utils.c more.c

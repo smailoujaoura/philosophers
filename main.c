@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/08 08:16:43 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/08 10:02:38 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,11 @@ void	eating(t_philo *philo)
 		printf("%zu ms %zu has taken a fork\n", get_time() - philo->sync->starting_time, philo->philo_number);
 		printf("%zu ms %zu is eating\n", get_time() - philo->sync->starting_time, philo->philo_number);
 		pthread_mutex_unlock(&philo->sync->write);
+
+		ft_msleep(philo->sync->eat_time);
+
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 	}
 	else
 	{
@@ -48,12 +53,13 @@ void	eating(t_philo *philo)
 		printf("%zu ms %zu has taken a fork\n", get_time() - philo->sync->starting_time, philo->philo_number);
 		printf("%zu ms %zu is eating\n", get_time() - philo->sync->starting_time, philo->philo_number);
 		pthread_mutex_unlock(&philo->sync->write);
+
+		ft_msleep(philo->sync->eat_time);
+
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(&philo->right_fork);
 	}
 
-	ft_msleep(philo->sync->eat_time);
-
-	pthread_mutex_unlock(&philo->right_fork);
-	pthread_mutex_unlock(philo->left_fork);
 
 	pthread_mutex_lock(&philo->sync->lock);
 	philo->total_meals++;
@@ -81,22 +87,6 @@ void	*start_routine(void *ptr)
 	return (NULL);
 }
 
-int	count_eaten_meals(t_philo *philos, t_sync *sync)
-{
-	int		i;
-
-	i = 0;
-	while (i < sync->total_philos)
-	{
-		if (philos[i].total_meals < sync->cycles_total)
-		{
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
-
 int	has_reached_total_cycles(t_philo *philos, t_sync *sync)
 {
 	int	i;
@@ -107,6 +97,7 @@ int	has_reached_total_cycles(t_philo *philos, t_sync *sync)
 		pthread_mutex_lock(&sync->lock);
 		if (philos[i].total_meals < sync->cycles_total)
 		{
+			// printf("here %i\n", i);
 			pthread_mutex_unlock(&sync->lock);
 			return (0);
 		}
@@ -148,12 +139,12 @@ int	start_sync(t_philo *philos, t_sync *sync)
 		}
 		if (sync->cycles_total > 0 && has_reached_total_cycles(philos, sync))
 		{
+			pthread_mutex_lock(&sync->write);
 			//sync->stop = 1;
 			return (0);
 		}
-		usleep(1000);
+		usleep(2000);
 	}
-	pthread_mutex_unlock(&sync->write);
 	return (0);
 }
 
@@ -176,7 +167,6 @@ int	main(int argc, char *argv[])
 		}
 	}
 	else
-		printf("Erroneous Arguments!\n");
 	ft_malloc(0, 1, NULL, NULL);
 	return (0);
 }
