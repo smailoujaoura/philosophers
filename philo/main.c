@@ -6,79 +6,36 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/09 10:21:03 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/09 13:58:36 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// int	get_mutex(pthread_mutex_t *mutex, int flag)
-// {
-// 	static int	i;
-
-// 	if ()
-// }
-
-int	lock_if(t_philo *philo, pthread_mutex_t *mutex)
+int	are_full(t_philo *philos, t_sync *sync)
 {
-	if (safe_writing_messages(philo, NULL, 2))
+	int	i;
+
+	i = 0;
+	pthread_mutex_lock(sync->checking_mutex);
+	while (i < sync->total_philos)
 	{
-		if (mutex == philo->second)
+		if (philos[i].total < sync->total_cycles)
 		{
-			pthread_mutex_unlock(philo->first);
-			philo->has_first = 0;
+			pthread_mutex_unlock(sync->checking_mutex);
+			return (0);
 		}
-		return (1);
+		i++;
 	}
-	pthread_mutex_lock(mutex);
-	return (0);
+	pthread_mutex_unlock(sync->checking_mutex);
+	return (1);
 }
 
-int	eating(t_philo *philo)
+void	write_safely(t_philo *philo, char *message)
 {
-	if (lock_if(philo, philo->first))
-		return (1);
-	philo->has_first = 1;
-
-	if (safe_writing_messages(philo, "has taken a fork", 0))
-		return (1);
-
-	if (lock_if(philo, philo->second))
-		return (1);
-	philo->has_second = 1;
-
-	if (safe_writing_messages(philo, "has taken a fork", 0))
-		return (2);
-
-	pthread_mutex_lock(&philo->sync->checking);
-	philo->last_meal = get_time();
-	pthread_mutex_unlock(&philo->sync->checking);
-	
-
-	if (safe_writing_messages(philo, "is eating", 0))
-		return (3);
-
-
-	ft_msleep(philo->sync->eat_time);
-
-	pthread_mutex_unlock(philo->second);
-	pthread_mutex_unlock(philo->first);
-	philo->has_first = 0;
-	philo->has_second = 0;
-
-
-	pthread_mutex_lock(&philo->sync->checking);
-	philo->total_meals++;
-	pthread_mutex_unlock(&philo->sync->checking);
-	return (0);
-}
-
-void	release_held_forks(t_philo *philo)
-{
-	if (philo->has_first == 1)
-		pthread_mutex_unlock(philo->first);
-	if (philo->has_second == 1)
-		pthread_mutex_unlock(philo->second);
+	pthread_mutex_lock(philo->sync->writing_mutex);
+	printf("%zu ms %d %s\n", get_time() - philo->sync->start_time, philo->number, message);
+	pthread_mutex_unlock(philo->sync->writing_mutex);
 }
 
 void	*start_routine(void *ptr)
@@ -88,146 +45,80 @@ void	*start_routine(void *ptr)
 	philo = (t_philo*)ptr;
 	while (1)
 	{
-		if (eating(philo))
-			break ;
+		pthread_mutex_lock(philo->first);
+		write_safely(philo, "has taken a fork");
+		pthread_mutex_lock(philo->second);
+		write_safely(philo, "has taken a fork");
 
-		if (safe_writing_messages(philo, "is sleeping", 0))
-			break ;
+		pthread_mutex_lock(philo->sync->checking_mutex);
+		philo->last = get_time();
+		pthread_mutex_unlock(philo->sync->checking_mutex);
 
+		write_safely(philo, "is eating");
+		ft_msleep(philo->sync->eat_time);
+
+		pthread_mutex_unlock(philo->second);
+		pthread_mutex_unlock(philo->first);
+
+		pthread_mutex_lock(philo->sync->checking_mutex);
+		philo->total++;
+		pthread_mutex_unlock(philo->sync->checking_mutex);
+
+		write_safely(philo, "is sleeping");
 		ft_msleep(philo->sync->sleep_time);
-
-		if (safe_writing_messages(philo, "is thinking", 0))
-			break ;
-
-		pthread_mutex_lock(&philo->sync->stopper);
-		if (philo->sync->stop == 1)
-		{
-			pthread_mutex_unlock(&philo->sync->stopper);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->sync->stopper);
+		write_safely(philo, "is thinking");
 	}
-	release_held_forks(philo);
 	return (NULL);
 }
 
-int	has_reached_total_cycles(t_philo *philos, t_sync *sync)
+void	start_sync(t_philo *philos, t_sync *sync, int i)
 {
-	int	i;
-
-	i = 0;
-	while (i < sync->total_philos)
+	sync->start_time = get_time();
+	while (++i < sync->total_philos)
 	{
-		pthread_mutex_lock(&sync->checking);
-		if (philos[i].total_meals < sync->cycles_total)
-		{
-			// printf("here %i\n", i);
-			pthread_mutex_unlock(&sync->checking);
-			return (0);
-		}
-		pthread_mutex_unlock(&sync->checking);
-		i++;
+		philos[i].last = get_time();
+		if (pthread_create(&philos[i].thread, NULL, start_routine, &philos[i]))
+			return ;
+		if (pthread_detach(philos[i].thread))
+			return ;
 	}
-	return (1);
-}
-
-void	*monit(void *ptr)
-{
-	t_philo	*philos;
-	t_sync	*sync;
-	int		i;
-
-	philos = (t_philo*)ptr;
-	sync = (*philos).sync;
 	while (1)
 	{
 		i = -1;
 		while (++i < sync->total_philos)
 		{
-			pthread_mutex_lock(&sync->checking);
-			if (get_time() - philos[i].last_meal >= sync->death_time)
+			pthread_mutex_lock(sync->checking_mutex);
+			if (get_time() - philos[i].last >= sync->death_time)
 			{
-				safe_writing_messages(&philos[i], "has died", -1);
-
-				pthread_mutex_unlock(&sync->checking);
-				pthread_mutex_lock(&sync->stopper);
-				sync->stop = 1;
-				pthread_mutex_unlock(&sync->stopper);
-
-				return (0);
+				write_safely(&philos[i], "has died");
+				pthread_mutex_lock(sync->writing_mutex);
+				return ;
 			}
-			pthread_mutex_unlock(&sync->checking);
+			pthread_mutex_unlock(sync->checking_mutex);
 		}
-		if (sync->cycles_total > 0 && has_reached_total_cycles(philos, sync))
-		{
-			safe_writing_messages(&philos[0], NULL, -1);
-			pthread_mutex_lock(&sync->stopper);
-			sync->stop = 1;
-			pthread_mutex_unlock(&sync->stopper);
-			return (0);
-		}
+		if (sync->total_cycles > 0 && are_full(philos, sync))
+			break ;
 		usleep(1000);
 	}
 }
 
-int	start_sync(t_philo *philos, t_sync *sync)
-{
-	int			i;
-	pthread_t	monitor;
-
-	i = -1;
-	// timer_stamper(1);
-	sync->starting_time = get_time();
-	while (++i < sync->total_philos)
-	{
-		philos[i].last_meal = get_time();
-		if (pthread_create(&philos[i].thread_id, NULL, start_routine, &philos[i]))
-			return (-1);
-		// pthread_join(philos[i].thread_id, NULL);
-	}
-	pthread_create(&monitor, NULL, monit, philos);
-	i = -1;
-	while (++i < sync->total_philos)
-		pthread_join(philos[i].thread_id, NULL);
-	pthread_join(monitor, NULL);
-	return (0);
-}
-
 int	main(int argc, char *argv[])
 {
-	t_sync	*sync;
-	t_philo	*philos;
-	
+	static t_sync	sync;
+	static t_philo	philos[MAX_PHILOS];
+
 	if (argc == 5 || argc == 6)
 	{
-		sync = check_args(argv, argc == 6);
-		if (sync == NULL || (argc == 6 && sync->cycles_total == 0))
-			philos = NULL;
-		else if (sync->total_philos > TOTAL_PHILOS)
-			printf("Maximum number of philos is 200\n");
+		if (check_args(&sync, argv, argc == 6) == -1)
+			return (1);
+		else if (sync.total_philos > MAX_PHILOS)
+			printf("Max philosophers allowed is %d\n", MAX_PHILOS);
 		else
 		{
-			philos = init_sync(sync);
-			start_sync(philos, sync);
-			// pthread_mutex_unlock(&sync->checking);
-			// pthread_mutex_unlock(&sync->write);
-			// pthread_mutex_unlock(&sync->state);
-			// pthread_mutex_unlock(&sync->stats);
-			// pthread_mutex_unlock(&sync->stopper);
-
-			int i = -1;
-			while (++i < sync->total_philos)
-				pthread_mutex_destroy(philos[i].first);
-
-
-			// pthread_mutex_destroy(&sync->checking);
-			// pthread_mutex_destroy(&sync->write);
-			// pthread_mutex_destroy(&sync->state);
-			// pthread_mutex_destroy(&sync->stats);
-			// pthread_mutex_destroy(&sync->stopper);
+			if (init_sync(&sync, philos) == -1)
+				return (1);
+			start_sync(philos, &sync, -1);
 		}
 	}
-	else
-	ft_malloc(0, 1, NULL, NULL);
 	return (0);
 }

@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Philosophers",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/philo",
+            "args": ["2", "800", "200", "200", "1"],  // Example arguments, adjust as needed
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build-debug-philo"
+        }
+    ]
+}
