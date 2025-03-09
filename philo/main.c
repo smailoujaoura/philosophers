@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/09 13:58:36 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/09 19:49:44 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	start_sync(t_philo *philos, t_sync *sync, int i)
 		while (++i < sync->total_philos)
 		{
 			pthread_mutex_lock(sync->checking_mutex);
-			if (get_time() - philos[i].last >= sync->death_time)
+			if (get_time() - philos[i].last > sync->death_time)
 			{
 				write_safely(&philos[i], "has died");
 				pthread_mutex_lock(sync->writing_mutex);
@@ -98,7 +98,7 @@ void	start_sync(t_philo *philos, t_sync *sync, int i)
 		}
 		if (sync->total_cycles > 0 && are_full(philos, sync))
 			break ;
-		usleep(1000);
+		usleep(100);
 	}
 }
 
