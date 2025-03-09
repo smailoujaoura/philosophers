@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/08 22:14:52 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/09 08:56:42 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,9 @@ typedef struct s_philo
 	pthread_mutex_t	right_fork;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*first;
+	int				has_first;
 	pthread_mutex_t	*second;
+	int				has_second;
 	t_sync			*sync;
 }	t_philo;
 
