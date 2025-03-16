@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/11 16:13:20 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/16 18:09:16 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,53 +16,63 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <sys/types.h>
-# include <fcntl.h>
-# include <sys/stat.h>
-# include <semaphore.h>
 # include <string.h>
 # include <pthread.h>
 # include <stdint.h>
 # include <sys/time.h>
-# include <sys/wait.h>
+# include <stdbool.h>
 
-# define BINARY 1
-# define SERIALIZER 0
+# define DIED_MESSAGE "died"
+# define EATING_MESSAGE "is eating" 
+# define THINKING_MESSAGE "is thinking"
+# define SLEEPING_MESSAGE "is sleeping"
+# define FORK_MESSAGE "has taken a fork"
+
+# define DESTROY -1
+# define INITIALIZE 1
+
+typedef struct s_philo t_philo;
 
 typedef struct s_sync
 {
-	int				total_philos;
-	int				total_cycles;
 	int				eat_time;
 	int				sleep_time;
-	int				stop;
-	size_t			start_time;
+	int				total_philos;
+	int				total_cycles;
 	size_t			death_time;
-	sem_t			*forks;
-	sem_t			*logs;
-	sem_t			*checks;
-	char			array[3][21];
+	size_t			start_time;
+	pthread_t		monitor_tpid;
+	pthread_mutex_t write_mutex;
+	pthread_mutex_t	meals_mutex;
+	pthread_mutex_t death_mutex;
+	pthread_mutex_t end_mutex;
+	t_philo			*philos_ptr;
 }	t_sync;
 
 typedef struct s_philo
 {
 	int				total;
 	int				number;
-	pid_t			pid;
-	size_t			last;
 	t_sync			*sync;
-	// pthread_t		thread;
-	// pthread_mutex_t	*right;
-	// pthread_mutex_t	*left;
-	// pthread_mutex_t	*first;
-	// pthread_mutex_t	*second;
+	size_t			last;
+	pthread_t		tid;
+	pthread_mutex_t	right;
+	pthread_mutex_t	*left;
+
+	pthread_mutex_t	*first;
+	pthread_mutex_t	*second;
 }	t_philo;
 
+// HOT 
 int		check_args(t_sync *sync, char **argv, int optional);
-int		init_everything(t_sync *sync, t_philo *philos, int total, int i);
-void    ft_msleep(size_t millisec);
+int		init_mutexes(t_sync *sync, int action, int *array);
+int		init_sync(t_sync *sync, t_philo **ptr, int i);
+bool	end_simulation(int flag, t_sync *sync);
+void	destroy_and_free(t_sync *sync);
+
+// COLD
+void	ft_msleep(size_t millisec);
 size_t	get_time(void);
-void	close_and_free(t_sync *sync, t_philo *philos);
 size_t	custom_atoi(const char *str, int *error);
 
 #endif
