@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:09:42 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:26:25 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,8 +123,15 @@ int	check_args(t_sync *sync, char **argv, int optional)
 	sync->total_cycles = -1;
 	if (optional)
 		sync->total_cycles = custom_atoi(argv[5], &error);
-	if (error || !sync->death_time || !sync->eat_time
-		|| !sync->sleep_time || !sync->total_cycles)
+	if (error)
+		return (-1);
+	if (sync->death_time <= 0)
+		return (-1);
+	if (sync->eat_time <= 0)
+		return (-1);
+	if (sync->sleep_time <= 0)
+		return (-1);
+	if (optional && sync->total_cycles < 0)
 		return (-1);
 	return (0);
 }

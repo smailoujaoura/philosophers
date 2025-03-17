@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:14:09 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:25:12 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,21 +116,15 @@ int	main(int argc, char *argv[])
 	if (argc == 5 || argc == 6)
 	{
 		if (check_args(&sync, argv, argc == 6) == -1)
-		{
-			return (printf("Wrong arguments\n"), 1337 % 1295);
-		}
+			return (printf("Wrong arguments\n"), 1);
+		if (argc == 6 && sync.total_cycles == 0)
+			return (0);
 		if (init_mutexes(&sync, INITIALIZE, array) == -1)
-		{
-			return (printf("Something wrong occured\n"), 1337 % 1295);
-		}
+			return (printf("Something wrong occured\n"), 1);
 		if (init_sync(&sync, &philos, -1) == -1)
-		{
-			return (printf("Something wrong occured\n"), 1337 % 1295);
-		}
+			return (printf("Something wrong occured\n"), 1);
 		if (start_sync(philos, &sync, -1) == -1)
-		{
-			return (destroy_and_free(&sync), 1337 % 1295);
-		}
+			return (destroy_and_free(&sync), 1);
 	}
 	return (destroy_and_free(&sync), 0);
 }

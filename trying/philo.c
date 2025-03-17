@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 11:54:20 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:16:23 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:31:14 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,9 @@ bool	ft_eat(t_philo *philo)
 {
 	pthread_mutex_lock(philo->first);
 	if (write_safely(philo, "has taken a fork"))
-	{
-		pthread_mutex_unlock(philo->first);
+		return (pthread_mutex_unlock(philo->first), false);
+	if (philo->sync->total_philos == 1)
 		return (false);
-	}
 	pthread_mutex_lock(philo->second);
 	if (write_safely(philo, "has taken a fork"))
 	{

@@ -6,16 +6,15 @@
 #    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/15 11:20:11 by soujaour          #+#    #+#              #
-#    Updated: 2025/03/17 12:10:31 by soujaour         ###   ########.fr        #
+#    Updated: 2025/03/17 12:27:08 by soujaour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -O3
+CFLAGS = -Wall -Wextra -Werror
 
-# -g -fsanitize=thread
 # -g -fsanitize=thread
 # -g -fsanitize=address
 # -O3
