@@ -1,35 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sync_utils.c                                       :+:      :+:    :+:   */
+/*   atoi.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/15 14:04:57 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 11:47:32 by soujaour         ###   ########.fr       */
+/*   Created: 2025/03/17 12:09:06 by soujaour          #+#    #+#             */
+/*   Updated: 2025/03/17 12:09:20 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t	get_time(void)
+size_t	custom_atoi(char *s, int *err)
 {
-	struct timeval	tv;
+	size_t	num;
 
-	if (gettimeofday(&tv, NULL) == -1)
-		return (0);
-	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-}
-
-void    ft_msleep(size_t millisecs, t_sync *sync)
-{
-    size_t    start_time;
-
-    start_time = get_time();
-    while (millisecs + start_time > get_time())
+	num = 0;
+	while ((*s >= 9 && *s <= 13) || *s == 32)
+		s++;
+	if (*s == '-' || *s == '+')
 	{
-		if (end_simulation(0, sync))
-			break ;
-        usleep(500);
+		if (*s == '-')
+			*err = 1;
+		s++;
 	}
+	if (!*s)
+		*err = 1;
+	while (*s)
+	{
+		if (num > SIZE_MAX / 10
+			|| (num == SIZE_MAX / 10 && (size_t)(*s - '0') > SIZE_MAX % 10))
+			*err = 1;
+		if (*s >= '0' && *s <= '9')
+			num = num * 10 + (*s - '0');
+		else
+			*err = 1;
+		s++;
+	}
+	return (num);
 }

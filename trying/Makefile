@@ -6,7 +6,7 @@
 #    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/02/15 11:20:11 by soujaour          #+#    #+#              #
-#    Updated: 2025/03/17 12:05:56 by soujaour         ###   ########.fr        #
+#    Updated: 2025/03/17 12:10:31 by soujaour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ CFLAGS = -Wall -Wextra -Werror -O3
 # -g -fsanitize=address
 # -O3
 
-SRCS =	main.c philo.c init_utils.c sync_utils.c
+SRCS =	main.c philo.c init.c time.c atoi.c
 
 OBJS = $(SRCS:.c=.o)
 
