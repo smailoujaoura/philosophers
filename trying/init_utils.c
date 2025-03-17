@@ -6,37 +6,37 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/16 18:08:23 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/17 12:01:39 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-size_t	custom_atoi(const char *str, int *error)
+size_t	custom_atoi(char *s, int *err)
 {
 	size_t	num;
 
 	num = 0;
-	while ((*str >= 9 && *str <= 13) || *str == 32)
-		str++;
-	if (*str == '-' || *str == '+')
+	while ((*s >= 9 && *s <= 13) || *s == 32)
+		s++;
+	if (*s == '-' || *s == '+')
 	{
-		if (*str == '-')
-			*error = 1;
-		str++;
+		if (*s == '-')
+			*err = 1;
+		s++;
 	}
-	if (!*str)
-		*error = 1;
-	while (*str)
+	if (!*s)
+		*err = 1;
+	while (*s)
 	{
 		if (num > SIZE_MAX / 10
-			|| (num == SIZE_MAX / 10 && (size_t)(*str - '0') > SIZE_MAX % 10))
-			*error = 1;
-		if (*str >= '0' && *str <= '9')
-			num = num * 10 + (*str - '0');
+			|| (num == SIZE_MAX / 10 && (size_t)(*s - '0') > SIZE_MAX % 10))
+			*err = 1;
+		if (*s >= '0' && *s <= '9')
+			num = num * 10 + (*s - '0');
 		else
-			*error = 1;
-		str++;
+			*err = 1;
+		s++;
 	}
 	return (num);
 }
