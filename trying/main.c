@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:25:12 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 14:38:33 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,9 @@ int	main(int argc, char *argv[])
 			return (printf("Something wrong occured\n"), 1);
 		if (start_sync(philos, &sync, -1) == -1)
 			return (destroy_and_free(&sync), 1);
+		destroy_and_free(&sync);
+		return (0);
 	}
-	return (destroy_and_free(&sync), 0);
+	printf("Wrong number of arguments\n");
+	return (1);
 }
