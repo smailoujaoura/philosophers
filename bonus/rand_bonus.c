@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:09:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:18:27 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:29:11 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ char	*random_name(char *name)
 		seed += get_time();
 	while (++i < 20)
 	{
-		key = (seed * 1664525 + 1013904223) % 62;
-		seed = (seed * 1664525 + 1013904223) * 8276348762;
+		key = (seed * MULTIPLIER + INCREMENT) % MODULUS;
 		if (key < 26)
 			name[i] = 'A' + key % 26;
 		else if (key >= 26 && key < 52)

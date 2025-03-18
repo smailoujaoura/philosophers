@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:19:29 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:27:23 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@
 
 # define BINARY 1
 # define SERIALIZER 0
+
+# define MULTIPLIER 1664525
+# define INCREMENT 1013904223
+# define MODULUS 62
 
 typedef struct s_philo	t_philo;
 
