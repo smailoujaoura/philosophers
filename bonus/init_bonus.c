@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 15:11:20 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 18:19:39 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	init_sems(t_sync *sync, int num_philo)
 	sync->write_sem = sem_open(sync->name[1], O_CREAT, 0777, BINARY);
 	if (sync->write_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 1));
-	sync->death_sem = sem_open(sync->name[2], O_CREAT, 0777, SERIALIZER);
+	sync->death_sem = sem_open(sync->name[2], O_CREAT, 0777, BINARY);
 	if (sync->death_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 2));
 	sync->meals_sem = sem_open(sync->name[3], O_CREAT, 0777, SERIALIZER);
