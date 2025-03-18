@@ -78,11 +78,22 @@ void	philosopher(t_philo *philo)
 
 void	*monit(void *ptr)
 {
-	(void)ptr;
-   	waitpid(-1, NULL, 0);
-	kill(0, SIGKILL);
-    while (waitpid(-1, NULL, 0) > 0)
-		;
+	int		i;
+	t_sync	*sync;
+
+	i = -1;
+	sync = ptr;
+	waitpid(-1, NULL, 0);
+	while (++i < sync->total_philos)
+	{
+		kill(sync->pids[i], SIGKILL);
+	}
+
+	i = -1;
+	while (++i < sync->total_philos)
+	{
+		waitpid(sync->pids[i], NULL, 0);
+	}
     return (NULL);
 }
 
@@ -104,7 +115,6 @@ int	start_sync(t_philo *philos, t_sync *sync, int i)
 {
 	if (pthread_create(&sync->monitor, NULL, monit, sync))
 		return (-1);
-	pthread_detach(sync->monitor);
 	sync->start_time = get_time();
 	while (++i < sync->total_philos)
 	{
@@ -122,6 +132,7 @@ int	start_sync(t_philo *philos, t_sync *sync, int i)
 			philosopher(&philos[i]);
 	}
 	watch_meals(sync);
+	pthread_join(sync->monitor, NULL);
 	return (0);
 }
 
