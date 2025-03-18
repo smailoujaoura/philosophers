@@ -6,73 +6,11 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 20:27:46 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:17:29 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-void	write_safely(t_philo *philo, char *message)
-{
-	sem_wait(philo->sync->write_sem);
-	printf("%zu ms %d %s\n",
-		get_time() - philo->sync->start_time, philo->number, message);
-	sem_post(philo->sync->write_sem);
-}
-
-void	*exit_on_death(void *ptr)
-{
-	t_philo	*philo;
-
-	philo = ptr;
-	while (true)
-	{
-		usleep(100);
-		if (get_time() - philo->last > philo->sync->death_time)
-		{
-			sem_wait(philo->sync->write_sem);
-			printf("%zu %i died\n", get_time() - philo->sync->start_time, philo->number);
-			exit(0);
-		}
-	}
-	return (NULL);
-}
-
-void	philosopher(t_philo *philo)
-{
-	pthread_t	tid;
-	int			posted;
-
-	posted = 0;
-	if (philo->number % 2 == 0)
-		ft_msleep(philo->sync->eat_time / 2);
-	philo->last = get_time();
-
-	if (pthread_create(&tid, NULL, exit_on_death, philo))
-		exit(1);
-	pthread_detach(tid);
-	while (true)
-	{
-		sem_wait(philo->sync->forks_sem);
-		write_safely(philo, "has taken a fork");
-		sem_wait(philo->sync->forks_sem);
-		write_safely(philo, "has taken a fork");
-		philo->last = get_time();
-		write_safely(philo, "is eating");
-		ft_msleep(philo->sync->eat_time);
-		sem_post(philo->sync->forks_sem);
-		sem_post(philo->sync->forks_sem);
-		philo->total++;
-		if (!posted && philo->sync->total_cycles > 0 && philo->total >= philo->sync->total_cycles)
-		{
-			sem_post(philo->sync->meals_sem);
-			posted = 1;
-		}
-		write_safely(philo, "is sleeping");
-		ft_msleep(philo->sync->sleep_time);
-		write_safely(philo, "is thinking");
-	}
-}
 
 void	*count_meals(void *ptr)
 {
@@ -85,24 +23,41 @@ void	*count_meals(void *ptr)
 	{
 		sem_wait(sync->meals_sem);
 	}
-	kill(sync->pids[0], SIGTERM);
+	kill(sync->pid, SIGTERM);
 	return (NULL);
+}
+
+int	clean_exit(t_sync *sync)
+{
+	int	i;
+	int	status;
+
+	waitpid(-1, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGTERM)
+	{
+		i = 0;
+		while (++i < sync->total_philos)
+			kill(sync->pids[i], SIGTERM);
+	}
+	else
+	{
+		i = -1;
+		while (++i < sync->total_philos)
+			kill(sync->pids[i], SIGTERM);
+	}
+	while (waitpid(-1, NULL, 0) > 0)
+		;
+	return (0);
 }
 
 int	start_sync(t_philo *philos, t_sync *sync, int i)
 {
-	int	status;
-
-	if (sync->total_cycles > 0)
-	{
-		if (pthread_create(&sync->monitor, NULL, count_meals, sync))
-			return (-1);
-		pthread_detach(sync->monitor);
-	}
 	sync->start_time = get_time();
 	while (++i < sync->total_philos)
 	{
 		sync->pids[i] = fork();
+		if (i == 0)
+			sync->pid = sync->pids[i];
 		if (sync->pids[i] == -1)
 		{
 			while (--i)
@@ -115,24 +70,13 @@ int	start_sync(t_philo *philos, t_sync *sync, int i)
 		else if (sync->pids[i] == 0)
 			philosopher(&philos[i]);
 	}
-	waitpid(-1, &status, 0);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGTERM)
+	if (sync->total_cycles > 0)
 	{
-		i = 0;
-		while (++i < sync->total_philos)
-			kill(sync->pids[i], SIGTERM);
-		printf("here STOPPED DUE TO MEAL LIMIT\n");
+		if (pthread_create(&sync->monitor_tid, NULL, count_meals, sync))
+			return (-1);
+		pthread_detach(sync->monitor_tid);
 	}
-	else
-	{
-		i = -1;
-		while (++i < sync->total_philos)
-			kill(sync->pids[i], SIGTERM);
-		printf("OTHER\n");
-	}
-	while (waitpid(-1, NULL, 0) > 0)
-		;
-	return (0);
+	return (clean_exit(sync));
 }
 
 void	close_and_free(t_sync *sync)

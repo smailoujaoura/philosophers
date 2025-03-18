@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/15 14:04:57 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 13:52:51 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:19:06 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,35 +21,13 @@ size_t	get_time(void)
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void	ft_msleep(size_t millisecs /*t_sync *sync */)
+void	ft_msleep(size_t millisecs)
 {
 	size_t	start_time;
 
 	start_time = get_time();
-	usleep(millisecs * 0.7 * 1000);
 	while (millisecs + start_time > get_time())
 	{
-		// if (end_simulation(0, sync))
-		// 	break ;
 		usleep(500);
 	}
 }
-
-
-// size_t	get_time(void)
-// {
-// 	struct timeval	tv;
-
-// 	gettimeofday(&tv, NULL);
-// 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
-// }
-
-// void    ft_msleep(size_t millisec)
-// {
-//     size_t    start_time;
-
-//     start_time = get_time();
-// 	usleep((millisec - 10) * 1000);
-//     while (millisec + start_time > get_time())
-//         usleep(50);
-// }

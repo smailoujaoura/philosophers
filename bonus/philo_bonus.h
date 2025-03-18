@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 14:44:09 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:19:29 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,17 @@ typedef struct s_sync
 	int				sleep_time;
 	int				total_philos;
 	int				total_cycles;
-	
 	size_t			death_time;
+	pid_t			pid;
+	pid_t			*pids;
+	char			name[4][21];
 	size_t			start_time;
-
 	sem_t			*write_sem;
 	sem_t			*meals_sem;
 	sem_t			*death_sem;
 	sem_t			*forks_sem;
-
-	pid_t			*pids;
-	pthread_t		monitor;
-
-	char			name[4][21];
-
 	t_philo			*philos_ptr;
+	pthread_t		monitor_tid;
 }	t_sync;
 
 typedef struct s_philo
@@ -65,21 +61,15 @@ typedef struct s_philo
 	int				total;
 	size_t			last;
 	t_sync			*sync;
-
-	
 }	t_philo;
 
+void	ft_msleep(size_t millisecs);
 size_t	get_time(void);
 size_t	custom_atoi(char *s, int *err);
-void	ft_msleep(size_t millisecs /*t_sync *sync */);
 int		check_args(t_sync *sync, char **argv, int optional);
-
 int		init_sems(t_sync *sync, int num_philo);
 int		init_sync(t_sync *sync, t_philo **ptr);
-
-
-
-
-char	*prng(char *name);
+char	*random_name(char *name);
+void	philosopher(t_philo *philo);
 
 #endif

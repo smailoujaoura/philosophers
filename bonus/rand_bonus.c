@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:09:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 17:09:40 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:18:27 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,11 @@ size_t	custom_atoi(char *s, int *err)
 	return (num);
 }
 
-
-// void	close_and_free(t_sync *sync, t_philo *philos)
-// {
-// 	free(philos);
-// 	sem_close(sync->forks_sem);
-// 	sem_close(sync->write_sem);
-// 	sem_close(sync->meals_sem);
-// 	sem_close(sync->death_sem);
-// }
-
-// int	ft_sem_destroy(sem_t *sem, char *name)
-// {
-// 	sem_close(sem);
-// 	sem_unlink(name);
-// 	return (-1);
-// }
-
-char	*prng(char *name)
+char	*random_name(char *name)
 {
 	static size_t	seed;
-	size_t	key;
-	int		i;
+	size_t			key;
+	int				i;
 
 	i = 0;
 	name[i] = '/';
@@ -83,6 +66,5 @@ char	*prng(char *name)
 		seed += 1;
 	}
 	name[i] = '\0';
-	// printf("[%s]\n", name);
 	return (name);
 }

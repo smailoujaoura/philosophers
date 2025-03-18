@@ -6,70 +6,81 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 11:54:20 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 14:40:19 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:19:52 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+void	write_safely(t_philo *philo, char *message)
+{
+	sem_wait(philo->sync->write_sem);
+	printf("%zu ms %d %s\n",
+		get_time() - philo->sync->start_time, philo->number, message);
+	sem_post(philo->sync->write_sem);
+}
 
+void	ft_eat(t_philo *philo, int *posted)
+{
+	sem_wait(philo->sync->forks_sem);
+	write_safely(philo, "has taken a fork");
+	sem_wait(philo->sync->forks_sem);
+	write_safely(philo, "has taken a fork");
+	sem_wait(philo->sync->death_sem);
+	philo->last = get_time();
+	sem_post(philo->sync->death_sem);
+	write_safely(philo, "is eating");
+	ft_msleep(philo->sync->eat_time);
+	sem_post(philo->sync->forks_sem);
+	sem_post(philo->sync->forks_sem);
+	philo->total++;
+	if (philo->sync->total_cycles > 0
+		&& philo->total >= philo->sync->total_cycles && !*posted)
+	{
+		sem_post(philo->sync->meals_sem);
+		*posted = 1;
+	}
+}
 
-// bool	ft_eat(t_philo *philo)
-// {
-// 	pthread_mutex_lock(philo->first);
-// 	if (write_safely(philo, "has taken a fork"))
-// 		return (pthread_mutex_unlock(philo->first), false);
-// 	if (philo->sync->total_philos == 1)
-// 		return (false);
-// 	pthread_mutex_lock(philo->second);
-// 	if (write_safely(philo, "has taken a fork"))
-// 	{
-// 		pthread_mutex_unlock(philo->first);
-// 		pthread_mutex_unlock(philo->second);
-// 		return (false);
-// 	}
-// 	pthread_mutex_lock(&philo->sync->death_mutex);
-// 	philo->last = get_time();
-// 	pthread_mutex_unlock(&philo->sync->death_mutex);
-// 	if (write_safely(philo, "is eating"))
-// 		return (false);
-// 	ft_msleep(philo->sync->eat_time, philo->sync);
-// 	pthread_mutex_unlock(philo->second);
-// 	pthread_mutex_unlock(philo->first);
-// 	pthread_mutex_lock(&philo->sync->meals_mutex);
-// 	philo->total++;
-// 	pthread_mutex_unlock(&philo->sync->meals_mutex);
-// 	return (true);
-// }
+void	*exit_on_death(void *ptr)
+{
+	t_philo	*philo;
 
-// bool	ft_think(t_philo *philo)
-// {
-// 	if (write_safely(philo, "is thinking"))
-// 		return (false);
-// 	return (true);
-// }
+	philo = ptr;
+	while (true)
+	{
+		usleep(100);
+		sem_wait(philo->sync->death_sem);
+		if (get_time() - philo->last > philo->sync->death_time)
+		{
+			sem_post(philo->sync->death_sem);
+			sem_wait(philo->sync->write_sem);
+			printf("%zu %i died\n",
+				get_time() - philo->sync->start_time, philo->number);
+			exit(0);
+		}
+		sem_post(philo->sync->death_sem);
+	}
+	return (NULL);
+}
 
-// bool	ft_sleep(t_philo *philo)
-// {
-// 	if (write_safely(philo, "is sleeping"))
-// 		return (false);
-// 	ft_msleep(philo->sync->sleep_time, philo->sync);
-// 	return (true);
-// }
+void	philosopher(t_philo *philo)
+{
+	pthread_t	tid;
+	int			posted;
 
-// void	*philosopher(void *ptr)
-// {
-// 	t_philo	*philo;
-
-// 	philo = (t_philo *)ptr;
-// 	while (true)
-// 	{
-// 		if (!ft_eat(philo))
-// 			break ;
-// 		if (!ft_sleep(philo))
-// 			break ;
-// 		if (!ft_think(philo))
-// 			break ;
-// 	}
-// 	return (NULL);
-// }
+	posted = 0;
+	if (philo->number % 2 == 0)
+		ft_msleep(philo->sync->eat_time / 2);
+	philo->last = get_time();
+	if (pthread_create(&tid, NULL, exit_on_death, philo))
+		exit(1);
+	pthread_detach(tid);
+	while (true)
+	{
+		ft_eat(philo, &posted);
+		write_safely(philo, "is sleeping");
+		ft_msleep(philo->sync->sleep_time);
+		write_safely(philo, "is thinking");
+	}
+}

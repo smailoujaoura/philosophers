@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 18:19:39 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/18 21:09:26 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ int	close_and_unlink(t_sync *sync, int index)
 
 int	init_sems(t_sync *sync, int num_philo)
 {
-	prng(sync->name[0]);
-	prng(sync->name[1]);
-	prng(sync->name[2]);
-	prng(sync->name[3]);
+	random_name(sync->name[0]);
+	random_name(sync->name[1]);
+	random_name(sync->name[2]);
+	random_name(sync->name[3]);
 	sync->forks_sem = sem_open(sync->name[0], O_CREAT, 0777, num_philo);
 	if (sync->forks_sem == SEM_FAILED)
 		return (-1);
