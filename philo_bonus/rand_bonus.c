@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:09:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:29:11 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:27:01 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ char	*random_name(char *name)
 		seed = get_time();
 	else
 		seed += get_time();
+	// printf("%zu\n", seed);
 	while (++i < 20)
 	{
 		key = (seed * MULTIPLIER + INCREMENT) % MODULUS;
@@ -65,5 +66,6 @@ char	*random_name(char *name)
 		seed += 1;
 	}
 	name[i] = '\0';
+	printf("rand: [%s]\n", name);
 	return (name);
 }

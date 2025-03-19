@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:27:23 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 10:43:06 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,13 @@ typedef struct s_sync
 	size_t			death_time;
 	pid_t			pid;
 	pid_t			*pids;
-	char			name[4][21];
+	char			name[5][21];
 	size_t			start_time;
 	sem_t			*write_sem;
 	sem_t			*meals_sem;
 	sem_t			*death_sem;
 	sem_t			*forks_sem;
+	sem_t			*resources_sem;
 	t_philo			*philos_ptr;
 	pthread_t		monitor_tid;
 }	t_sync;

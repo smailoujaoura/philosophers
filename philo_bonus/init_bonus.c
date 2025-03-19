@@ -6,34 +6,25 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:09:26 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:26:12 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	bulk_unlink(char *first, char *second, char *third, char *fourth)
+void	bulk_unlink(char names[5][21])
 {
-	if (first)
-		sem_unlink(first);
-	if (second)
-		sem_unlink(second);
-	if (third)
-		sem_unlink(third);
-	if (fourth)
-		sem_unlink(fourth);
+	sem_unlink(names[0]);
+	sem_unlink(names[1]);
+	sem_unlink(names[2]);
+	sem_unlink(names[3]);
+	sem_unlink(names[4]);
 }
 
 int	close_and_unlink(t_sync *sync, int index)
 {
-	if (index == 0)
-	{
-		return (-1);
-	}
-	else if (index == 1)
-	{
+	if (index == 1)
 		sem_close(sync->forks_sem);
-	}
 	else if (index == 2)
 	{
 		sem_close(sync->forks_sem);
@@ -45,10 +36,15 @@ int	close_and_unlink(t_sync *sync, int index)
 		sem_close(sync->write_sem);
 		sem_close(sync->death_sem);
 	}
-	while (--index)
+	else if (index == 4)
 	{
-		sem_unlink(sync->name[index]);
+		sem_close(sync->forks_sem);
+		sem_close(sync->write_sem);
+		sem_close(sync->death_sem);
+		sem_close(sync->meals_sem);
 	}
+	while (--index)
+		sem_unlink(sync->name[index]);
 	return (-1);
 }
 
@@ -58,19 +54,39 @@ int	init_sems(t_sync *sync, int num_philo)
 	random_name(sync->name[1]);
 	random_name(sync->name[2]);
 	random_name(sync->name[3]);
-	sync->forks_sem = sem_open(sync->name[0], O_CREAT, 0777, num_philo);
+	random_name(sync->name[4]);
+	sync->forks_sem = sem_open(sync->name[0], O_CREAT, 0666, num_philo);
 	if (sync->forks_sem == SEM_FAILED)
 		return (-1);
-	sync->write_sem = sem_open(sync->name[1], O_CREAT, 0777, BINARY);
+	sync->write_sem = sem_open(sync->name[1], O_CREAT, 0666, BINARY);
 	if (sync->write_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 1));
-	sync->death_sem = sem_open(sync->name[2], O_CREAT, 0777, BINARY);
+	sync->death_sem = sem_open(sync->name[2], O_CREAT, 0666, BINARY);
 	if (sync->death_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 2));
-	sync->meals_sem = sem_open(sync->name[3], O_CREAT, 0777, SERIALIZER);
+	sync->meals_sem = sem_open(sync->name[3], O_CREAT, 0666, SERIALIZER);
 	if (sync->meals_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 3));
-	bulk_unlink(sync->name[0], sync->name[1], sync->name[2], sync->name[3]);
+	sync->resources_sem = sem_open(sync->name[4], O_CREAT, 0666, SERIALIZER);
+	if (sync->resources_sem == SEM_FAILED)
+		return (close_and_unlink(sync, 4));
+	bulk_unlink(sync->name);
+	int forks;
+	int write;
+	int	death;
+	int	meals;
+	int	resources;
+	sem_getvalue(sync->resources_sem, &forks);
+	sem_getvalue(sync->resources_sem, &write);
+	sem_getvalue(sync->resources_sem, &death);
+	sem_getvalue(sync->resources_sem, &meals);
+	sem_getvalue(sync->resources_sem, &resources);
+	printf("forks initial value: %d\n", forks);
+	printf("write initial value: %d\n", write);
+	printf("death initial value: %d\n", death);
+	printf("meals initial value: %d\n", meals);
+	printf("resources initial value: %d\n", resources);
+	// sleep(2);
 	return (0);
 }
 

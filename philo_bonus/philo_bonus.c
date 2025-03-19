@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 11:54:20 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 21:19:52 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:17:43 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 void	write_safely(t_philo *philo, char *message)
 {
 	sem_wait(philo->sync->write_sem);
-	printf("%zu ms %d %s\n",
+	printf("%zu %d %s\n",
 		get_time() - philo->sync->start_time, philo->number, message);
 	sem_post(philo->sync->write_sem);
 }
 
 void	ft_eat(t_philo *philo, int *posted)
 {
+	if (philo->number % 2)
+		sem_wait(philo->sync->resources_sem);
 	sem_wait(philo->sync->forks_sem);
 	write_safely(philo, "has taken a fork");
 	sem_wait(philo->sync->forks_sem);
@@ -29,6 +31,8 @@ void	ft_eat(t_philo *philo, int *posted)
 	sem_wait(philo->sync->death_sem);
 	philo->last = get_time();
 	sem_post(philo->sync->death_sem);
+	if (philo->number % 2 == 0)
+		sem_post(philo->sync->resources_sem);
 	write_safely(philo, "is eating");
 	ft_msleep(philo->sync->eat_time);
 	sem_post(philo->sync->forks_sem);
@@ -49,11 +53,9 @@ void	*exit_on_death(void *ptr)
 	philo = ptr;
 	while (true)
 	{
-		usleep(100);
 		sem_wait(philo->sync->death_sem);
 		if (get_time() - philo->last > philo->sync->death_time)
 		{
-			sem_post(philo->sync->death_sem);
 			sem_wait(philo->sync->write_sem);
 			printf("%zu %i died\n",
 				get_time() - philo->sync->start_time, philo->number);
@@ -70,8 +72,6 @@ void	philosopher(t_philo *philo)
 	int			posted;
 
 	posted = 0;
-	if (philo->number % 2 == 0)
-		ft_msleep(philo->sync->eat_time / 2);
 	philo->last = get_time();
 	if (pthread_create(&tid, NULL, exit_on_death, philo))
 		exit(1);

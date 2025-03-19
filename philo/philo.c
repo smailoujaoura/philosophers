@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 11:54:20 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:31:14 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:03:24 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ bool	write_safely(t_philo *philo, char *message)
 	if (end_simulation(0, philo->sync))
 		return (true);
 	pthread_mutex_lock(&philo->sync->write_mutex);
-	printf("%zu ms %d %s\n",
+	printf("%zu %d %s\n",
 		get_time() - philo->sync->start_time, philo->number, message);
 	pthread_mutex_unlock(&philo->sync->write_mutex);
 	return (false);

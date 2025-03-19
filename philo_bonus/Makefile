@@ -6,14 +6,14 @@
 #    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/18 14:39:07 by soujaour          #+#    #+#              #
-#    Updated: 2025/03/18 21:04:56 by soujaour         ###   ########.fr        #
+#    Updated: 2025/03/19 11:17:02 by soujaour         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo_bonus
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread
+CFLAGS = -Wall -Wextra -Werror -pthread -g #-fsanitize=thread
 
 SRCS =	main_bonus.c init_bonus.c philo_bonus.c rand_bonus.c time_bonus.c
 

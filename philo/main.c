@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:37:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/18 14:38:33 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:04:29 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	*monitor(void *ptr)
 			{
 				end_simulation(-1, sync);
 				pthread_mutex_unlock(&sync->death_mutex);
-				return (printf("%zu ms %d has died\n",
+				return (printf("%zu %d died\n",
 						get_time() - sync->start_time, philos[i].number), NULL);
 			}
 			pthread_mutex_unlock(&sync->death_mutex);
@@ -81,9 +81,6 @@ void	*monitor(void *ptr)
 	return (NULL);
 }
 
-// if (pthread_create(&sync->monitor_tpid, NULL, monitor, sync))
-// 	return (-1); // STILL 
-// pthread_join(sync->monitor_tpid, NULL);
 int	start_sync(t_philo *philos, t_sync *sync, int i)
 {
 	sync->start_time = get_time();
