@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/19 12:21:04 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 13:07:09 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@
 # include <pthread.h>
 # include <stdbool.h>
 # include <sys/time.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <stdint.h>
 # include <signal.h>
 
 # define DESTROY -1

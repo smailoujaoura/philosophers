@@ -6,13 +6,13 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/17 12:26:25 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 15:59:59 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	destroy_and_free(t_sync *sync)
+void	destroy_and_free(t_sync *sync, int *arr, int flag)
 {
 	int	i;
 
@@ -21,11 +21,16 @@ void	destroy_and_free(t_sync *sync)
 	{
 		pthread_mutex_destroy(&((sync->philos_ptr)[i].right));
 	}
-	pthread_mutex_destroy(&sync->write_mutex);
-	pthread_mutex_destroy(&sync->meals_mutex);
-	pthread_mutex_destroy(&sync->death_mutex);
-	pthread_mutex_destroy(&sync->end_mutex);
-	free(sync->philos_ptr);
+	if (arr[0] == 0)
+		pthread_mutex_destroy(&sync->write_mutex);
+	if (arr[1] == 0)
+		pthread_mutex_destroy(&sync->meals_mutex);
+	if (arr[2] == 0)
+		pthread_mutex_destroy(&sync->death_mutex);
+	if (arr[3] == 0)
+		pthread_mutex_destroy(&sync->end_mutex);
+	if (flag)
+		free(sync->philos_ptr);
 }
 
 void	finalize_init(t_philo *philos, int total_philos)
@@ -89,17 +94,16 @@ int	init_mutexes(t_sync *sync, int action, int *arr)
 	if (action == INITIALIZE)
 	{
 		arr[0] = pthread_mutex_init(&sync->write_mutex, NULL);
+		if (arr[0] != 0)
+			return (-1);
 		arr[1] = pthread_mutex_init(&sync->meals_mutex, NULL);
 		arr[2] = pthread_mutex_init(&sync->death_mutex, NULL);
 		arr[3] = pthread_mutex_init(&sync->end_mutex, NULL);
-		if (arr[0] == -1)
-			pthread_mutex_destroy(&sync->write_mutex);
-		if (arr[1] == -1)
-			pthread_mutex_destroy(&sync->meals_mutex);
-		if (arr[2] == -1)
-			pthread_mutex_destroy(&sync->death_mutex);
-		if (arr[3] == -1)
-			pthread_mutex_destroy(&sync->end_mutex);
+		if (arr[0] != 0 || arr[1] != 0 || arr[2] != 0 || arr[3] !=0)
+		{
+			destroy_and_free(sync, arr, 0);
+			return (-1);
+		}
 	}
 	if (action == DESTROY)
 	{

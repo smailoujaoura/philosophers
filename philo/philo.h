@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/08 14:38:02 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/19 12:22:26 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 15:59:43 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # include <stdio.h>
+# include <stdint.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
@@ -55,9 +56,9 @@ typedef struct s_philo
 
 size_t	get_time(void);
 size_t	custom_atoi(char *s, int *err);
-void	destroy_and_free(t_sync *sync);
-void	ft_msleep(size_t millisecs, t_sync *sync);
 bool	end_simulation(int flag, t_sync *sync);
+void	ft_msleep(size_t millisecs, t_sync *sync);
+void	destroy_and_free(t_sync *sync, int *arr, int flag);
 int		check_args(t_sync *sync, char **argv, int optional);
 int		init_mutexes(t_sync *sync, int action, int *array);
 int		init_sync(t_sync *sync, t_philo **ptr, int i);

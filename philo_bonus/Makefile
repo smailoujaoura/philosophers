@@ -1,7 +1,6 @@
 NAME = philo_bonus
 CC = cc
-CFLAGS = -pthread -g -fsanitize=thread
-# -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
 SRCS =	main_bonus.c init_bonus.c philo_bonus.c rand_bonus.c time_bonus.c
 OBJS = $(SRCS:.c=.o)
 
