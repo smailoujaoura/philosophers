@@ -1,22 +1,8 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/03/18 14:39:07 by soujaour          #+#    #+#              #
-#    Updated: 2025/03/19 11:17:02 by soujaour         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME = philo_bonus
-
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread -g #-fsanitize=thread
-
+CFLAGS = -pthread -g -fsanitize=thread
+# -Wall -Wextra -Werror
 SRCS =	main_bonus.c init_bonus.c philo_bonus.c rand_bonus.c time_bonus.c
-
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
@@ -24,7 +10,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-%.o: %.c philo.h
+%.o: %.c philo_bonus.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
@@ -35,4 +21,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: clean run
+.PHONY: clean

@@ -1,7 +1,7 @@
-NAME = philo
+NAME = philo_bonus
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
-SRCS =	main.c philo.c init.c time.c atoi.c
+CFLAGS = -Wall -Wextra -Werror -pthread
+SRCS =	main_bonus.c init_bonus.c philo_bonus.c rand_bonus.c time_bonus.c
 OBJS = $(SRCS:.c=.o)
 
 all: $(NAME)
@@ -9,7 +9,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-%.o: %.c philo.h
+%.o: %.c philo_bonus.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

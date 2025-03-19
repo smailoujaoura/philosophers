@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rand_bonus.c                                       :+:      :+:    :+:   */
+/*   atoi.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/18 10:09:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/19 12:37:20 by soujaour         ###   ########.fr       */
+/*   Created: 2025/03/17 12:09:06 by soujaour          #+#    #+#             */
+/*   Updated: 2025/03/17 12:09:20 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_bonus.h"
+#include "philo.h"
 
 size_t	custom_atoi(char *s, int *err)
 {
@@ -39,32 +39,4 @@ size_t	custom_atoi(char *s, int *err)
 		s++;
 	}
 	return (num);
-}
-
-char	*random_name(char *name)
-{
-	static size_t	seed;
-	size_t			key;
-	int				i;
-
-	i = 0;
-	name[i] = '/';
-	if (seed == 0)
-		seed = get_time();
-	else
-		seed += get_time();
-	while (++i < 20)
-	{
-		key = (seed * MULTIPLIER + INCREMENT) % MODULUS;
-		if (key < 26)
-			name[i] = 'A' + key % 26;
-		else if (key >= 26 && key < 52)
-			name[i] = 'a' + key % 26;
-		else
-			name[i] = '0' + key % 10;
-		seed *= MULTIPLIER;
-	}
-	name[i] = '\0';
-	printf("%s\n", name);
-	return (name);
 }

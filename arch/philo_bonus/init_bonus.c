@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 11:56:55 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/19 12:45:06 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:52:31 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,23 +71,6 @@ int	init_sems(t_sync *sync, int num_philo)
 	if (sync->resources_sem == SEM_FAILED)
 		return (close_and_unlink(sync, 4));
 	bulk_unlink(sync->name);
-		int forks;
-	int write;
-	int	death;
-	int	meals;
-	int	resources;
-	
-    sem_getvalue(sync->forks_sem, &forks);      // Corrected
-    sem_getvalue(sync->write_sem, &write);      // Corrected
-    sem_getvalue(sync->death_sem, &death);      // Corrected
-    sem_getvalue(sync->meals_sem, &meals);      // Corrected
-    sem_getvalue(sync->resources_sem, &resources); // Corrected
-	
-	printf("forks initial value: %d\n", forks);
-	printf("write initial value: %d\n", write);
-	printf("death initial value: %d\n", death);
-	printf("meals initial value: %d\n", meals);
-	printf("resources initial value: %d\n", resources);
 	return (0);
 }
 

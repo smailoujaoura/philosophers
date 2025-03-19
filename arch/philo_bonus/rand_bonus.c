@@ -6,7 +6,7 @@
 /*   By: soujaour <soujaour@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 10:09:01 by soujaour          #+#    #+#             */
-/*   Updated: 2025/03/19 12:37:20 by soujaour         ###   ########.fr       */
+/*   Updated: 2025/03/19 11:51:47 by soujaour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,5 @@ char	*random_name(char *name)
 		seed *= MULTIPLIER;
 	}
 	name[i] = '\0';
-	printf("%s\n", name);
 	return (name);
 }
