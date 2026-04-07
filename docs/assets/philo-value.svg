@@ -1,0 +1,48 @@
+<svg width="1200" height="700" viewBox="0 0 1200 700" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Recruiter value summary</title>
+  <desc id="desc">An infographic highlighting synchronization, timing, resilience, and systems thinking as the main skills demonstrated by the philosophers project.</desc>
+  <defs>
+    <linearGradient id="bg" x1="72" y1="60" x2="1128" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10283B"/>
+      <stop offset="1" stop-color="#28535B"/>
+    </linearGradient>
+    <linearGradient id="cardA" x1="90" y1="178" x2="560" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#193A4F"/>
+      <stop offset="1" stop-color="#112B3D"/>
+    </linearGradient>
+    <linearGradient id="cardB" x1="640" y1="178" x2="1110" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#234B57"/>
+      <stop offset="1" stop-color="#143541"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="700" rx="28" fill="url(#bg)"/>
+  <text x="78" y="92" fill="#F5F0E4" font-family="Georgia, serif" font-size="42" font-weight="700">Why this project has hiring signal</text>
+  <text x="78" y="128" fill="#B8D0D6" font-family="Trebuchet MS, sans-serif" font-size="22">It shows the ability to reason carefully about contested resources, timing, and failure in low-level C.</text>
+
+  <rect x="78" y="174" width="492" height="220" rx="24" fill="url(#cardA)" stroke="#5DB6BE"/>
+  <rect x="628" y="174" width="492" height="220" rx="24" fill="url(#cardB)" stroke="#9FD0DA"/>
+  <rect x="78" y="428" width="492" height="220" rx="24" fill="url(#cardB)" stroke="#F0C27B"/>
+  <rect x="628" y="428" width="492" height="220" rx="24" fill="url(#cardA)" stroke="#C3D58B"/>
+
+  <text x="116" y="228" fill="#7FD1B9" font-family="Trebuchet MS, sans-serif" font-size="28" font-weight="700">Synchronization</text>
+  <text x="116" y="266" fill="#EAF5F7" font-family="Trebuchet MS, sans-serif" font-size="20">Mutexes, semaphores, critical sections, and resource ownership.</text>
+  <text x="116" y="300" fill="#BCD4DB" font-family="Trebuchet MS, sans-serif" font-size="18">The project demonstrates practical reasoning about deadlocks, race conditions, and controlled access to shared state.</text>
+
+  <text x="666" y="228" fill="#9FD8E8" font-family="Trebuchet MS, sans-serif" font-size="28" font-weight="700">Timing and observability</text>
+  <text x="666" y="266" fill="#EAF5F7" font-family="Trebuchet MS, sans-serif" font-size="20">Millisecond monitoring, readable logs, and shutdown-aware waiting.</text>
+  <text x="666" y="300" fill="#BCD4DB" font-family="Trebuchet MS, sans-serif" font-size="18">It reflects the kind of debugging discipline needed when bugs depend on scheduling rather than obvious syntax errors.</text>
+
+  <text x="116" y="482" fill="#F0C27B" font-family="Trebuchet MS, sans-serif" font-size="28" font-weight="700">Resilience and cleanup</text>
+  <text x="116" y="520" fill="#EAF5F7" font-family="Trebuchet MS, sans-serif" font-size="20">Partial failure handling, joins, kills, closes, destroys, and unlink paths.</text>
+  <text x="116" y="554" fill="#BCD4DB" font-family="Trebuchet MS, sans-serif" font-size="18">That matters in production work because resource leaks and half-failed startup paths are real engineering problems.</text>
+
+  <text x="666" y="482" fill="#C3D58B" font-family="Trebuchet MS, sans-serif" font-size="28" font-weight="700">Systems thinking</text>
+  <text x="666" y="520" fill="#EAF5F7" font-family="Trebuchet MS, sans-serif" font-size="20">Same domain, two architectures, explicit tradeoffs.</text>
+  <text x="666" y="554" fill="#BCD4DB" font-family="Trebuchet MS, sans-serif" font-size="18">This is a good signal that the developer can compare models, not just memorize APIs.</text>
+
+  <rect x="166" y="84" width="12" height="12" rx="6" fill="#7FD1B9"/>
+  <rect x="652" y="84" width="12" height="12" rx="6" fill="#9FD8E8"/>
+  <rect x="478" y="84" width="12" height="12" rx="6" fill="#F0C27B"/>
+  <rect x="1044" y="84" width="12" height="12" rx="6" fill="#C3D58B"/>
+</svg>
